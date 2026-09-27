@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd -- "$(dirname -- "$(readlink -f -- "$0")")"
+exec ../Aquarium/.venv/bin/python -m ocp_vscode --host 127.0.0.1 --port 3940 --theme dark --black_edges

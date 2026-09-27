@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd -- "$(dirname -- "$(readlink -f -- "$0")")"
+export OIL_SHELF_OCP_PORT=3941
+exec ../Aquarium/.venv/bin/python oil_shelf.py

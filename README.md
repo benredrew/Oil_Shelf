@@ -21,9 +21,11 @@ sparse infill is appropriate only in the large, low-stress web interior. Avoid
 relying on Z-layer tension or peel at the pin holes (roughly the 0.4-strength
 direction of the stated FDM anisotropy).
 
-Run `./viewer` in one terminal and `./preview` in another. The dedicated OCP
-instance listens on `127.0.0.1:3940`. Printable STEP and STL files are written
-to `output/` whenever `./preview` runs.
+Install [Toolbox](https://github.com/benredrew/toolbox) and run its
+`./install` command once. Then run `./viewer` in one terminal and `./preview`
+in another. The dedicated CadKit instance listens on `127.0.0.1:3940`.
+Printable STEP and STL files are written to `output/` whenever `./preview`
+runs.
 
 For the close-up assembly sequence, run `./preview exploded_joint.py`. It shows
 the fixed perforated post, corbel, six pins, and shelf end along their insertion

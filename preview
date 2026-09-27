@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd -- "$(dirname -- "$(readlink -f -- "$0")")"
-exec cad-python "${1:-oil_shelf.py}"
+exec toolbox python "${1:-oil_shelf.py}"

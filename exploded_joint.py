@@ -1,7 +1,10 @@
 """Exploded close-up of the new six-pin Oil Shelf corbel."""
 
+import os
+
 import cadquery as cq
-from ocp_vscode import Camera, set_port, show
+from cadkit import viewer as cad_viewer
+from ocp_vscode import Camera
 
 import oil_shelf as model
 
@@ -49,17 +52,13 @@ wall_slice = (
 
 
 def show_exploded_joint():
-    set_port(3940)
-    show(
-        post,
-        corbel,
-        pins,
-        shelf_end,
-        corbel_arrow,
-        pin_arrow,
-        shelf_arrow,
-        wall_slice,
-        names=[
+    port = int(os.environ.get("OIL_SHELF_OCP_PORT", "3940"))
+    if not cad_viewer.is_listening(port):
+        print(f"viewer       none on {port} -- not shown (./viewer starts one)")
+        return False
+    for index, (part, name, color, alpha) in enumerate(zip(
+        (post, corbel, pins, shelf_end, corbel_arrow, pin_arrow, shelf_arrow, wall_slice),
+        (
             "01_tall_perforated_post_fixed",
             "02_pinned_corbel_slide_forward",
             "03_six_steel_pins_insert",
@@ -68,8 +67,8 @@ def show_exploded_joint():
             "pin_assembly_arrow",
             "shelf_assembly_arrow",
             "wall_3mm_behind_wood",
-        ],
-        colors=[
+        ),
+        (
             (148, 98, 55),
             (38, 64, 82),
             (180, 185, 190),
@@ -78,11 +77,15 @@ def show_exploded_joint():
             (225, 184, 70),
             (225, 184, 70),
             (205, 205, 200),
-        ],
-        alphas=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.16],
-        black_edges=True,
-        reset_camera=Camera.ISO,
-    )
+        ),
+        (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.16),
+    )):
+        cad_viewer.show(
+            part, name=name, port=port, clear=index == 0,
+            reset_camera=Camera.ISO if index == 0 else None,
+            options={"color": color, "alpha": alpha, "black_edges": True},
+        )
+    return True
 
 
 if __name__ == "__main__":

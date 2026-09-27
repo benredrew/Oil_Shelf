@@ -14,18 +14,16 @@ any agent — Claude, Codex, or otherwise.
 ./viewer_full      # start the full-assembly viewer on 3941
 ```
 
-## This project owns no Python environment
+## This project uses Toolbox's Python environment
 
-It runs on **`cad-python`**, the shared CAD interpreter
-(`~/.local/bin/cad-python` → `~/.local/share/cad/venv`). It used to invoke
-`../Aquarium/.venv/bin/python` directly from four separate scripts, which
-meant renaming, moving or rebuilding a *different* project broke this one, and
-the dependency was invisible unless you read every script. Do not reintroduce
-a relative path into a sibling project.
+Install [Toolbox](https://github.com/benredrew/toolbox) once and run its
+`./install` command. That creates the `toolbox` command, backed by its pinned
+CAD runtime. This project invokes `toolbox python`; it must never reach into a
+sibling checkout, a `.venv`, or `cad-python`.
 
-The shared `cadkit` package is importable from that interpreter:
+The shared `cadkit` package is importable from Toolbox:
 `cadkit.sheet` for drawing sheets, `cadkit.viewer` for viewer handling. See
-`~/Projects/cadkit/AGENTS.md`.
+CadKit's published documentation.
 
 ## Building never requires a viewer
 

@@ -11,7 +11,7 @@ from pathlib import Path
 
 import cadquery as cq
 from cadkit import viewer as cad_viewer
-from ocp_vscode import Camera, set_port, show
+from ocp_vscode import Camera
 
 
 INCH = 25.4
@@ -247,17 +247,12 @@ def show_assembly():
         print(f"viewer       none on {OCP_PORT} -- not shown "
               f"(./viewer starts one)")
         return False
-    set_port(OCP_PORT)
-    show(
-        shelf,
-        left_post,
-        right_post,
-        left_corbel,
-        right_corbel,
-        left_pins,
-        right_pins,
-        wall_reference,
-        names=[
+    for index, (part, name, color, alpha) in enumerate(zip(
+        (
+            shelf, left_post, right_post, left_corbel, right_corbel,
+            left_pins, right_pins, wall_reference,
+        ),
+        (
             "existing_oil_shelf_beam",
             "left_tall_perforated_post",
             "right_tall_perforated_post",
@@ -266,8 +261,8 @@ def show_assembly():
             "left_six_steel_pins",
             "right_six_steel_pins",
             "wall_clearance_reference",
-        ],
-        colors=[
+        ),
+        (
             (176, 126, 74),
             (148, 98, 55),
             (148, 98, 55),
@@ -276,11 +271,15 @@ def show_assembly():
             (180, 185, 190),
             (180, 185, 190),
             (205, 205, 200),
-        ],
-        alphas=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.16],
-        black_edges=True,
-        reset_camera=Camera.ISO,
-    )
+        ),
+        (1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.16),
+    )):
+        cad_viewer.show(
+            part, name=name, port=OCP_PORT, clear=index == 0,
+            reset_camera=Camera.ISO if index == 0 else None,
+            options={"color": color, "alpha": alpha, "black_edges": True},
+        )
+    return True
 
 
 def export_printables():

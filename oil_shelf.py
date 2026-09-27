@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 
 import cadquery as cq
+from cadkit import viewer as cad_viewer
 from ocp_vscode import Camera, set_port, show
 
 
@@ -235,6 +236,17 @@ wall_reference = build_wall_reference()
 
 
 def show_assembly():
+    """Push to a viewer if one is up; say so and carry on if not.
+
+    Previously this called set_port/show directly, so building the model at
+    all required a viewer to be running on OCP_PORT. cadkit.viewer.show
+    reports an absent viewer and returns False instead of raising, so the
+    model can be built headless.
+    """
+    if not cad_viewer.is_listening(OCP_PORT):
+        print(f"viewer       none on {OCP_PORT} -- not shown "
+              f"(./viewer starts one)")
+        return False
     set_port(OCP_PORT)
     show(
         shelf,

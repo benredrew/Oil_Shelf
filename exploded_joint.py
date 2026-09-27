@@ -52,9 +52,11 @@ wall_slice = (
 
 
 def show_exploded_joint():
-    port = int(os.environ.get("OIL_SHELF_OCP_PORT", "3940"))
-    if not cad_viewer.is_listening(port):
-        print(f"viewer       none on {port} -- not shown (./viewer starts one)")
+    port = int(os.environ.get("CAD_VIEWER_PORT", os.environ.get("OIL_SHELF_OCP_PORT", "3940")))
+    if not cad_viewer.is_ready(port):
+        state = "waiting for its browser" if cad_viewer.is_listening(port) else "none"
+        print(f"viewer       {state} on {port} -- not shown "
+              "(use `toolbox preview -- ./preview exploded_joint.py`)")
         return False
     for index, (part, name, color, alpha) in enumerate(zip(
         (post, corbel, pins, shelf_end, corbel_arrow, pin_arrow, shelf_arrow, wall_slice),

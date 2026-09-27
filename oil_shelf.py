@@ -62,7 +62,10 @@ WALL_PLANE_Y = SHELF_DEPTH / 2.0 + WALL_GAP
 
 ROOT = Path(__file__).parent
 OUTPUT_DIR = ROOT / "output"
-OCP_PORT = int(os.environ.get("OIL_SHELF_OCP_PORT", "3940"))
+# CAD_VIEWER_PORT is injected by Toolbox's atomic `toolbox preview` command.
+# Keep the project variable and fixed port as backwards-compatible fallbacks
+# for the named long-lived Oil Shelf viewers.
+OCP_PORT = int(os.environ.get("CAD_VIEWER_PORT", os.environ.get("OIL_SHELF_OCP_PORT", "3940")))
 
 
 def rounded_yz_prism(length, depth, height, radius, center_x=0, center_y=0, center_z=0):
@@ -243,9 +246,10 @@ def show_assembly():
     reports an absent viewer and returns False instead of raising, so the
     model can be built headless.
     """
-    if not cad_viewer.is_listening(OCP_PORT):
-        print(f"viewer       none on {OCP_PORT} -- not shown "
-              f"(./viewer starts one)")
+    if not cad_viewer.is_ready(OCP_PORT):
+        state = "waiting for its browser" if cad_viewer.is_listening(OCP_PORT) else "none"
+        print(f"viewer       {state} on {OCP_PORT} -- not shown "
+              "(use `toolbox preview -- ./preview`)")
         return False
     for index, (part, name, color, alpha) in enumerate(zip(
         (

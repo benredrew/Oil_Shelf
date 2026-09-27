@@ -12,6 +12,7 @@ any agent — Claude, Codex, or otherwise.
 ./preview_full     # build, pointed at the full-assembly viewer on 3941
 ./viewer           # start the viewer on 3940
 ./viewer_full      # start the full-assembly viewer on 3941
+toolbox preview --name oil-shelf-agent -- ./preview
 ```
 
 ## This project uses Toolbox's Python environment
@@ -27,11 +28,18 @@ CadKit's published documentation.
 
 ## Building never requires a viewer
 
-`show_assembly()` checks whether anything is listening on `OCP_PORT` and
+`show_assembly()` checks whether a browser-ready viewer is on `OCP_PORT` and
 returns without drawing if not, so `./preview` works headless. Do not make the
 build depend on a GUI being up — that charges a human interaction for every
 run. `OIL_SHELF_OCP_PORT` overrides the port; 3940 and 3941 belong to this
-project.
+project. For an interactive preview, use the one `toolbox preview` command
+shown above: it starts/reserves the viewer, opens the browser, waits for that
+browser to register, then runs the build with `CAD_VIEWER_PORT` injected.
+That standard variable takes precedence over the Oil-specific fallback, so
+parallel agents receive isolated viewers without repurposing 3940/3941.
+Never start `./viewer` and separately run `./preview` as a hand-timed pair;
+OCP-VSCode drops model data sent before the browser is connected. Plain
+`./preview` remains the headless build path.
 
 ## History
 
